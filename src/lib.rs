@@ -2,6 +2,10 @@
 
 use core::mem::MaybeUninit;
 
+pub fn _construct_output() -> jlink_rtt::Output {
+    jlink_rtt::Output::new()
+}
+
 #[repr(C)]
 struct TriggerBacktrace {
     trigger: u8,
@@ -51,7 +55,7 @@ macro_rules! init_print {
     () => {
         #[allow(unused_unsafe)]
         unsafe {
-            let mut output = jlink_rtt::Output::new();
+            let mut output = $crate::_construct_output();
             unsafe {
                 *($crate::OUT.as_mut_ptr()) = output;
             }
