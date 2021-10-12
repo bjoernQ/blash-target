@@ -1,0 +1,15 @@
+[package]
+name = "blash-target"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+riscv = "0.7.0"
+bl602-hal = { git = "https://github.com/sipeed/bl602-hal", branch="main" }
+jlink_rtt = "0.2.0"
+
+[features]
+panic_backtrace = []
+exception_backtrace = []
