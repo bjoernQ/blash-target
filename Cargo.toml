@@ -8,7 +8,6 @@ edition = "2021"
 [dependencies]
 riscv = "0.7.0"
 bl602-hal = { git = "https://github.com/sipeed/bl602-hal", branch="main" }
-jlink_rtt = "0.2.0"
 
 [features]
 panic_backtrace = []

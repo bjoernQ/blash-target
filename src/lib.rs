@@ -1,9 +1,10 @@
 #![no_std]
 
 use core::mem::MaybeUninit;
+mod print_rtt;
 
-pub fn _construct_output() -> jlink_rtt::Output {
-    jlink_rtt::Output::new()
+pub fn _construct_output() -> print_rtt::Output {
+    print_rtt::Output::new()
 }
 
 #[repr(C)]
@@ -21,7 +22,7 @@ static mut _BLASH_BACKTRACE_TRIGGER: TriggerBacktrace = TriggerBacktrace {
     sp: 0,
 };
 
-pub static mut OUT: MaybeUninit<jlink_rtt::Output> = MaybeUninit::uninit();
+pub static mut OUT: MaybeUninit<print_rtt::Output> = MaybeUninit::uninit();
 
 pub fn out() -> &'static mut dyn core::fmt::Write {
     unsafe { &mut *(OUT.as_mut_ptr()) }
@@ -33,8 +34,7 @@ macro_rules! println {
         #[allow(unused_unsafe)]
         riscv::interrupt::free(|_|{
             let writer = $crate::out();
-            write!(writer, $($arg)*).ok();
-            write!(writer, "\r\n").ok();
+            writeln!(writer, $($arg)*).ok();
         });
     };
 }
@@ -130,9 +130,9 @@ fn custom_exception_handler(_trap_frame: &bl602_hal::interrupts::TrapFrame) -> !
 
     for _ in 0..50000 {}
     unsafe {
-        _BLASH_BACKTRACE_TRIGGER.trigger = 1;
         _BLASH_BACKTRACE_TRIGGER.mepc = riscv::register::mepc::read() as u32;
         _BLASH_BACKTRACE_TRIGGER.sp = _trap_frame.sp as u32;
+        _BLASH_BACKTRACE_TRIGGER.trigger = 1;
     }
     loop {}
 }
